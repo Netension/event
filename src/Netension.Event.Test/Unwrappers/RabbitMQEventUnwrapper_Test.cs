@@ -2,12 +2,11 @@
 using Moq;
 using Netension.Event.Defaults;
 using Netension.Event.RabbitMQ.Unwrappers;
-using Newtonsoft.Json;
+using Netension.Event.Test.Extensions;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,14 +15,6 @@ using Xunit.Abstractions;
 
 namespace Netension.Event.Test.Unwrappers
 {
-    public static class RabbitMQExtensions
-    {
-        public static ReadOnlyMemory<byte> Encode(this Event @event)
-        {
-            return new ReadOnlyMemory<byte>(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(@event)));
-        }
-    }
-
     public class RabbitMQEventUnwrapper_Test
     {
         private readonly ILogger<RabbitMQEventUnwrapper> _logger;
@@ -57,5 +48,20 @@ namespace Netension.Event.Test.Unwrappers
             // Assert
             Assert.Equal(@event, result);
         }
+
+        [Fact(DisplayName = "RabbitMQEventUnwrapper - UnwrapAsync - Message-Type header does not present")]
+        public async Task RabbitMQEventUnwrapper_UnwrapAsync_MessageTypeHeaderDoesNotPresent()
+        {
+            // Arrange
+            var sut = CreateSUT();
+            var @event = new Event(Guid.NewGuid());
+            var basicPropertiesMock = new Mock<IBasicProperties>();
+
+            basicPropertiesMock.SetupGet(bp => bp.Headers)
+                .Returns(new Dictionary<string, object>());
+
+            // Act
+            // Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.UnwrapAsync(new BasicDeliverEventArgs(null, 0, false, null, null, basicPropertiesMock.Object, @event.Encode()), CancellationToken.None));        }
     }
 }
