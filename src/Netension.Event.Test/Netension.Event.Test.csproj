@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Netension.Event.RabbitMQ\Netension.Event.RabbitMQ.csproj" />
     <ProjectReference Include="..\Netension.Event\Netension.Event.csproj" />
   </ItemGroup>
 

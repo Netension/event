@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netension.Event", "Netensio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netension.Event.Test", "Netension.Event.Test\Netension.Event.Test.csproj", "{551B23F0-39F3-41F7-AFD1-6F4CB0E8AA04}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netension.Event.RabbitMQ", "Netension.Event.RabbitMQ\Netension.Event.RabbitMQ.csproj", "{4FB486A4-4E9E-45A4-9949-624F364EA6B9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{551B23F0-39F3-41F7-AFD1-6F4CB0E8AA04}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{551B23F0-39F3-41F7-AFD1-6F4CB0E8AA04}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{551B23F0-39F3-41F7-AFD1-6F4CB0E8AA04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FB486A4-4E9E-45A4-9949-624F364EA6B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FB486A4-4E9E-45A4-9949-624F364EA6B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FB486A4-4E9E-45A4-9949-624F364EA6B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FB486A4-4E9E-45A4-9949-624F364EA6B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
