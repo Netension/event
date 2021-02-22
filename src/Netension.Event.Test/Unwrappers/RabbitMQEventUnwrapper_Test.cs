@@ -62,6 +62,39 @@ namespace Netension.Event.Test.Unwrappers
 
             // Act
             // Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.UnwrapAsync(new BasicDeliverEventArgs(null, 0, false, null, null, basicPropertiesMock.Object, @event.Encode()), CancellationToken.None));        }
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.UnwrapAsync(new BasicDeliverEventArgs(null, 0, false, null, null, basicPropertiesMock.Object, @event.Encode()), CancellationToken.None));
+        }
+
+        [Fact(DisplayName = "RabbitMQEventUnwrapper - UnwrapAsync - Header is null")]
+        public async Task RabbitMQEventUnwrapper_UnwrapAsync_HeaderIsNull()
+        {
+            // Arrange
+            var sut = CreateSUT();
+            var @event = new Event(Guid.NewGuid());
+            var basicPropertiesMock = new Mock<IBasicProperties>();
+
+            // Act
+            // Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.UnwrapAsync(new BasicDeliverEventArgs(null, 0, false, null, null, basicPropertiesMock.Object, @event.Encode()), CancellationToken.None));
+        }
+
+        [Fact(DisplayName = "RabbitMQEventUnwrapper - UnwrapAsync - Message-Type header is null")]
+        public async Task RabbitMQEventUnwrapper_UnwrapAsync_MessageTypeHeaderIsNull()
+        {
+            // Arrange
+            var sut = CreateSUT();
+            var @event = new Event(Guid.NewGuid());
+            var basicPropertiesMock = new Mock<IBasicProperties>();
+
+            basicPropertiesMock.SetupGet(bp => bp.Headers)
+                .Returns(new Dictionary<string, object> 
+                {
+                    { EventDefaults.MessageType, null }
+                });
+
+            // Act
+            // Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.UnwrapAsync(new BasicDeliverEventArgs(null, 0, false, null, null, basicPropertiesMock.Object, @event.Encode()), CancellationToken.None));
+        }
     }
 }

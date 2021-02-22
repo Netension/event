@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LightInject" Version="6.4.0" />
+    <PackageReference Include="Netension.Extensions.Security" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Netension.Event.Hosting.LightInject\Netension.Event.Hosting.LightInject.csproj" />
+    <ProjectReference Include="..\Netension.Event.RabbitMQ\Netension.Event.RabbitMQ.csproj" />
+  </ItemGroup>
+
+</Project>
