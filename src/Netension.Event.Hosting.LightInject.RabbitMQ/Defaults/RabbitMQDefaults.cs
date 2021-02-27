@@ -3,11 +3,11 @@
     public static class RabbitMQDefaults
     {
         public const string Key = "rabbitmq";
-        public static readonly string Receiver = $"{Key}-Default";
+        public static readonly string Listener = $"{Key}-Default";
 
-        public static class Prefixes
+        public static class Connections
         {
-            public static readonly string Listener = $"-Listener";
+            public static readonly string ListenerSuffix = "listener";
         }
     }
 }

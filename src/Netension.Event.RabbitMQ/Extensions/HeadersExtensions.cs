@@ -11,7 +11,7 @@ namespace RabbitMQ.Client.Events
         {
             object result;
             if (headers == null || !headers.TryGetValue(EventDefaults.MessageType, out result)) throw new InvalidOperationException($"{EventDefaults.MessageType} header does not present");
-            if (result == null) throw new InvalidOperationException($"{EventDefaults.MessageType} header does not present");
+            if (result == null) throw new InvalidOperationException($"{EventDefaults.MessageType} header has not present");
 
             return Encoding.UTF8.GetString((byte[])result);
         }

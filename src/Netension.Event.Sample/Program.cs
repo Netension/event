@@ -28,7 +28,8 @@ namespace Netension.Event.Sample
 
                     builder.UseRabbitMQ((options, configuration) => { configuration.GetSection("RabbitMQ").Bind(options); options.Password = "guest".Encrypt(); }, (builder) =>
                     {
-                        builder.AddListener((options, configuration) => configuration.GetSection("RabbitMQ:Receive").Bind(options));
+                        builder.AddListener((options, configuration) => 
+                        configuration.GetSection("RabbitMQ:Listen").Bind(options));
                     });
                 })
                 .ConfigureWebHostDefaults(webBuilder =>

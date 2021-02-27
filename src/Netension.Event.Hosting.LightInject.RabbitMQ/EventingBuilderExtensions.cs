@@ -30,21 +30,22 @@ namespace Netension.Event.Hosting.RabbitMQ
 
             builder.HostBuilder.ConfigureContainer<IServiceContainer>((context, container) =>
             {
-                container.RegisterSingleton(factory =>
-                {
-                    var options = factory.GetInstance<IOptionsSnapshot<RabbitMQOptions>>().Get(key);
-                    return new ConnectionFactory
-                    {
-                        HostName = options.Host,
-                        Port = options.Port,
-                        UserName = options.UserName,
-                        Password = options.Password.Decrypt(),
-                        DispatchConsumersAsync = true
-                    }.CreateConnection();
-                }, key);
+                container.RegisterSingleton(factory => CreateConnection(factory.GetInstance<IOptionsSnapshot<RabbitMQOptions>>().Get(key)), $"{key}-{RabbitMQDefaults.Connections.ListenerSuffix}");
             });
 
-            build(new RabbitMQBuilder(builder.HostBuilder));
+            build(new RabbitMQBuilder(builder.HostBuilder, key));
+        }
+
+        private static IConnection CreateConnection(RabbitMQOptions options)
+        {
+            return new ConnectionFactory
+            {
+                HostName = options.Host,
+                Port = options.Port,
+                UserName = options.UserName,
+                Password = options.Password.Decrypt(),
+                DispatchConsumersAsync = true
+            }.CreateConnection();
         }
     }
 }

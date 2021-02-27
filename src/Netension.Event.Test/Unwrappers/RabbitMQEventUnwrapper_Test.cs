@@ -49,7 +49,7 @@ namespace Netension.Event.Test.Unwrappers
             Assert.Equal(@event, result);
         }
 
-        [Fact(DisplayName = "RabbitMQEventUnwrapper - UnwrapAsync - Message-Type header does not present")]
+        [Fact(DisplayName = "RabbitMQEventUnwrapper - UnwrapAsync - Message-Type header has not present")]
         public async Task RabbitMQEventUnwrapper_UnwrapAsync_MessageTypeHeaderDoesNotPresent()
         {
             // Arrange
