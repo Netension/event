@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Netension.Event.Abstraction;
 using Netension.Event.Hosting.LightInject.RabbitMQ.Defaults;
 using Netension.Event.Hosting.LightInject.RabbitMQ.Startups;
+using Netension.Event.RabbitMQ.Initializers;
 using Netension.Event.RabbitMQ.Listeners;
 using Netension.Event.RabbitMQ.Options;
 using Netension.Event.RabbitMQ.Receivers;
@@ -53,7 +54,7 @@ namespace Netension.Event.Hosting.LightInject.RabbitMQ.Builders
 
                 container.RegisterSingleton(factory => factory.GetInstance<IConnectionFactory>().CreateConnection());
 
-                container.RegisterSingleton<IEventListener>(factory => new RabbitMQEventListener(factory.GetInstance<IConnection>($"{RabbitMQKey}-{RabbitMQDefaults.Connections.ListenerSuffix}"), factory.GetInstance<IOptionsSnapshot<RabbitMQListenerOptions>>().Get(key), factory.GetInstance<IRabbitMQEventReceiver>(key), factory.GetInstance<ILogger<RabbitMQEventListener>>()), key);
+                container.RegisterSingleton<IEventListener>(factory => new RabbitMQEventListener(factory.GetInstance<IConnection>($"{RabbitMQKey}-{RabbitMQDefaults.Connections.ListenerSuffix}"), factory.GetInstance<IOptionsSnapshot<RabbitMQListenerOptions>>().Get(key), factory.GetInstance<IRabbitMQEventReceiver>(key), factory.GetInstance<IRabbitMQInitializer>(), factory.GetInstance<ILogger<RabbitMQEventListener>>()), key);
             });
         }
     }

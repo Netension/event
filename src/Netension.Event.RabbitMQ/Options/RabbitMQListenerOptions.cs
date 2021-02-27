@@ -42,7 +42,7 @@ namespace Netension.Event.RabbitMQ.Options
         /// <summary>
         /// Prefix of the consumer tag.
         /// </summary>
-        public string ConsumerPrefix { get; set; }
+        public string ConsumerPrefix { get; set; } = string.Empty;
 
         public bool AutoAck { get; set; }
 
@@ -68,8 +68,8 @@ namespace Netension.Event.RabbitMQ.Options
         /// <summary>
         /// Routing key of the binding.
         /// </summary>
-        public string RoutingKey { get; set; }
+        public string RoutingKey { get; set; } = string.Empty;
 
-        public IDictionary<string, object> Arguments { get; set; }
+        public IDictionary<string, object> Arguments { get; set; } = new Dictionary<string, object>();
     }
 }

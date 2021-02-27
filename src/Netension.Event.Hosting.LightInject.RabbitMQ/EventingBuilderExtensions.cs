@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Netension.Event.Hosting.Builders;
 using Netension.Event.Hosting.LightInject.RabbitMQ.Builders;
 using Netension.Event.Hosting.LightInject.RabbitMQ.Defaults;
+using Netension.Event.RabbitMQ.Initializers;
 using Netension.Event.RabbitMQ.Options;
 using Netension.Extensions.Security;
 using RabbitMQ.Client;
@@ -31,6 +32,8 @@ namespace Netension.Event.Hosting.RabbitMQ
             builder.HostBuilder.ConfigureContainer<IServiceContainer>((context, container) =>
             {
                 container.RegisterSingleton(factory => CreateConnection(factory.GetInstance<IOptionsSnapshot<RabbitMQOptions>>().Get(key)), $"{key}-{RabbitMQDefaults.Connections.ListenerSuffix}");
+
+                container.RegisterTransient<IRabbitMQInitializer, RabbitMQInitializer>();
             });
 
             build(new RabbitMQBuilder(builder.HostBuilder, key));
