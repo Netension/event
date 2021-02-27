@@ -38,14 +38,17 @@ namespace Netension.Event.Test.Initializers
                 Queue = new QueueOptions { 
                     Name = "test_queue"
                 },
-                Exchange = "test_exchange"
+                Bindings = new List<BindingOptions>
+                {
+                    new BindingOptions{ Exchange = "TestExchange" }
+                }
             };
 
             // Act
             await sut.InitializeAsync(_channelMock.Object, options, CancellationToken.None);
 
             // Assert
-            _channelMock.Verify(c => c.QueueDeclare(It.Is<string>(q => q.Equals(options.Queue)), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>(), new Dictionary<string, object>()));
+            _channelMock.Verify(c => c.QueueDeclare(It.Is<string>(q => q.Equals(options.Queue.Name)), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>(), new Dictionary<string, object>()));
         }
     }
 }
