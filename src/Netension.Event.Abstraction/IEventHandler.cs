@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Netension.Event.Abstraction
 {
-    public interface IEventHandler<TEvent>
+    public interface IEventHandler<in TEvent>
         where TEvent : IEvent
     {
         Task HandleAsync(TEvent @event, CancellationToken cancellationToken);
