@@ -1,9 +1,7 @@
 ﻿using Netension.Event.Defaults;
-using System;
-using System.Collections.Generic;
 using System.Text;
 
-namespace RabbitMQ.Client.Events
+namespace System.Collections.Generic
 {
     public static class HeadersExtensions
     {
@@ -14,6 +12,11 @@ namespace RabbitMQ.Client.Events
             if (result == null) throw new InvalidOperationException($"{EventDefaults.MessageType} header has not present");
 
             return Encoding.UTF8.GetString((byte[])result);
+        }
+
+        public static void SetMessageType(this IDictionary<string, object> headers, string value)
+        {
+            headers.Add(EventDefaults.MessageType, value);
         }
     }
 }

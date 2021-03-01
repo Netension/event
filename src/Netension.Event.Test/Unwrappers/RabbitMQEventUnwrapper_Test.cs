@@ -7,6 +7,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,7 +41,7 @@ namespace Netension.Event.Test.Unwrappers
             var basicPropertiesMock = new Mock<IBasicProperties>();
 
             basicPropertiesMock.SetupGet(bp => bp.Headers)
-                .Returns(new Dictionary<string, object> { { EventDefaults.MessageType, @event.MessageType } });
+                .Returns(new Dictionary<string, object> { { EventDefaults.MessageType, Encoding.UTF8.GetBytes(@event.MessageType) } });
 
             // Act
             var result = await sut.UnwrapAsync(new BasicDeliverEventArgs(null, 0, false, null, null, basicPropertiesMock.Object,  @event.Encode()), CancellationToken.None);
