@@ -8,6 +8,7 @@
         public static class Connections
         {
             public static readonly string ListenerSuffix = "listener";
+            public static readonly string PublisherSuffix = "publisher";
         }
     }
 }

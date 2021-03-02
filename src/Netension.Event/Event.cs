@@ -1,11 +1,13 @@
 ﻿using Netension.Event.Abstraction;
 using System;
+using System.Text.Json.Serialization;
 
 namespace Netension.Event
 {
     public class Event : IEvent
     {
         public Guid EventId { get; }
+        [JsonIgnore]
         public string MessageType => $"{GetType().FullName}, {GetType().Assembly.GetName().Name}";
 
         public Event(Guid eventId)

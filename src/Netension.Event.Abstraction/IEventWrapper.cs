@@ -5,6 +5,7 @@ namespace Netension.Event.Abstraction
 {
     public interface IEventWrapper<TEnvelop>
     {
-        Task<TEnvelop> WrapAsync(IEvent @event, CancellationToken cancellationToken);
+        Task<TEnvelop> WrapAsync<TEvent>(TEvent @event, CancellationToken cancellationToken)
+            where TEvent : IEvent;
     }
 }

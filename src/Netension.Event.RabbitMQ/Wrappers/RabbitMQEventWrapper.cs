@@ -21,7 +21,8 @@ namespace Netension.Event.RabbitMQ.Wrappers
             _logger = logger;
         }
 
-        public Task<RabbitMQMessage> WrapAsync(IEvent @event, CancellationToken cancellationToken)
+        public Task<RabbitMQMessage> WrapAsync<TEvent>(TEvent @event, CancellationToken cancellationToken)
+            where TEvent : IEvent
         {
             if (@event == null) throw new ArgumentNullException(nameof(@event));
 

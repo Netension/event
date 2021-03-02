@@ -27,6 +27,8 @@ namespace Netension.Event.Sample
         {
             services.AddMvcCore()
                 .AddJsonOptions((options) => options.JsonSerializerOptions.Converters.Add(new SecureStringJsonConverter()));
+
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,7 +38,7 @@ namespace Netension.Event.Sample
 
             app.UseEndpoints(endpoints =>
             {
-
+                endpoints.MapDefaultControllerRoute();
             });
         }
     }

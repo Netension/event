@@ -1,5 +1,8 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using LightInject;
+using Microsoft.Extensions.Hosting;
+using Netension.Event.Abstraction;
 using Netension.Event.Hosting.LightInject.Registers;
+using Netension.Event.Publishers;
 using System;
 
 namespace Netension.Event.Hosting.Builders

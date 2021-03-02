@@ -13,17 +13,15 @@ namespace Netension.Event.RabbitMQ.Listeners
 {
     public class RabbitMQEventListener : IEventListener
     {
-        private readonly IConnection _connection;
+        private readonly IModel _channel;
         private readonly RabbitMQListenerOptions _options;
         private readonly IRabbitMQEventReceiver _receiver;
         private readonly IRabbitMQInitializer _initializer;
         private readonly ILogger<RabbitMQEventListener> _logger;
 
-        private IModel _channel;
-
-        public RabbitMQEventListener(IConnection connection, RabbitMQListenerOptions options, IRabbitMQEventReceiver receiver, IRabbitMQInitializer initializer, ILogger<RabbitMQEventListener> logger)
+        public RabbitMQEventListener(IModel channel, RabbitMQListenerOptions options, IRabbitMQEventReceiver receiver, IRabbitMQInitializer initializer, ILogger<RabbitMQEventListener> logger)
         {
-            _connection = connection;
+            _channel = channel;
             _options = options;
             _receiver = receiver;
             _initializer = initializer;
@@ -32,8 +30,6 @@ namespace Netension.Event.RabbitMQ.Listeners
 
         public Task ListenAsync(CancellationToken cancellationToken)
         {
-            _channel = _connection.CreateModel();
-
             _initializer.InitializeAsync(_channel, _options, cancellationToken);
 
             var consumer = new AsyncEventingBasicConsumer(_channel);
