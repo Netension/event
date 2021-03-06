@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
 using Netension.Event.Defaults;
+using Netension.Event.Extensions;
 using Netension.Event.RabbitMQ.Unwrappers;
 using Netension.Event.Test.Extensions;
 using RabbitMQ.Client;
@@ -41,7 +42,7 @@ namespace Netension.Event.Test.Unwrappers
             var basicPropertiesMock = new Mock<IBasicProperties>();
 
             basicPropertiesMock.SetupGet(bp => bp.Headers)
-                .Returns(new Dictionary<string, object> { { EventDefaults.MessageType, Encoding.UTF8.GetBytes(@event.MessageType) } });
+                .Returns(new Dictionary<string, object> { { EventDefaults.MessageType, Encoding.UTF8.GetBytes(@event.GetMessageType()) } });
 
             // Act
             var result = await sut.UnwrapAsync(new BasicDeliverEventArgs(null, 0, false, null, null, basicPropertiesMock.Object,  @event.Encode()), CancellationToken.None);
