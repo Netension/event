@@ -18,6 +18,7 @@ namespace Netension.Event.Test.Containers
     {
         private readonly ILogger<EventPublisherResolver> _logger;
         private ServiceContainer _serviceContainer;
+        private EventPublisherCollection _collection;
 
         public EventPublisherContainer_Test(ITestOutputHelper outputHelper)
         {
@@ -29,30 +30,9 @@ namespace Netension.Event.Test.Containers
         private EventPublisherResolver CreateSUT()
         {
             _serviceContainer = new ServiceContainer();
+            _collection = new EventPublisherCollection();
 
-            return new EventPublisherContainer(_serviceContainer.CreateServiceProvider(new ServiceCollection()), _logger);
-        }
-
-        [Fact(DisplayName = "EventPublisherContainer - Registrate - Key is null")]
-        public void EventPublisherContainer_Registrate_KeyIsNull()
-        {
-            // Arrange
-            var sut = CreateSUT();
-
-            // Act
-            // Assert
-            Assert.Throws<ArgumentNullException>(() => sut.Registrate(null, (@event) => true));
-        }
-
-        [Fact(DisplayName = "EventPublisherContainer - Registrate - Predicate is null")]
-        public void EventPublisherContainer_Registrate_PredicateIsNull()
-        {
-            // Arrange
-            var sut = CreateSUT();
-
-            // Act
-            // Assert
-            Assert.Throws<ArgumentNullException>(() => sut.Registrate(new Fixture().Create<string>(), null));
+            return new EventPublisherResolver(_serviceContainer.CreateServiceProvider(new ServiceCollection()), _collection, _logger);
         }
 
         [Fact(DisplayName = "EventPublisherContainer - Resolve - Resolve publishers")]
@@ -66,9 +46,9 @@ namespace Netension.Event.Test.Containers
             var key2 = new Fixture().Create<string>();
             var key3 = new Fixture().Create<string>();
 
-            sut.Registrate(key1, (@event) => true);
-            sut.Registrate(key2, (@event) => true);
-            sut.Registrate(key3, (@event) => false);
+            _collection.Add(key1, (@event) => true);
+            _collection.Add(key2, (@event) => true);
+            _collection.Add(key3, (@event) => false);
 
             _serviceContainer.RegisterInstance(publisherMock.Object, key1);
             _serviceContainer.RegisterInstance(publisherMock.Object, key2);

@@ -30,6 +30,7 @@ namespace Netension.Event.Hosting.LightInject.Registers
             {
                 container.RegisterScoped<IRabbitMQEventUnwrapper, RabbitMQEventUnwrapper>(key);
                 container.RegisterScoped<IRabbitMQEventReceiver, RabbitMQEventReceiver>(key);
+                container.Decorate(typeof(IRabbitMQEventReceiver), typeof(RabbitMQScopeHandler), registration => registration.ServiceName.Equals(key));
                 container.RegisterScoped<IEventListener>((factory) => new RabbitMQEventListener(factory.GetInstance<IModel>($"{rabbitKey}-{RabbitMQDefaults.Connections.ListenerSuffix}"), factory.GetInstance<IOptionsSnapshot<RabbitMQListenerOptions>>().Get(key), factory.GetInstance<IRabbitMQEventReceiver>(key), factory.GetInstance<IRabbitMQInitializer>(), factory.GetInstance<ILogger<RabbitMQEventListener>>()), key);
             });
         }

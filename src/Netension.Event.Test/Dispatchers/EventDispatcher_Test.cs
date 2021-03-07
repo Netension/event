@@ -52,7 +52,7 @@ namespace Netension.Event.Test.Dispatchers
             var eventHandlerMock = new Mock<IEventHandler<Event>>();
 
             _serviceProviderMock.Setup(sp => sp.GetService(It.IsAny<Type>()))
-                .Returns(new List<IEventHandler<Event>>() { eventHandlerMock.Object, eventHandlerMock.Object });
+                .Returns(new IEventHandler<Event>[] { eventHandlerMock.Object, eventHandlerMock.Object });
 
             // Act
             await sut.DispatchAsync(@event, CancellationToken.None);
