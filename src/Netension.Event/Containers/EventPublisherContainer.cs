@@ -11,7 +11,7 @@ namespace Netension.Event.Containers
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<EventPublisherContainer> _logger;
 
-        private IDictionary<string, Func<IEvent, bool>> _registrations = new Dictionary<string, Func<IEvent, bool>>();
+        private readonly IDictionary<string, Func<IEvent, bool>> _registrations = new Dictionary<string, Func<IEvent, bool>>();
 
         public EventPublisherContainer(IServiceProvider serviceProvider, ILogger<EventPublisherContainer> logger)
         {

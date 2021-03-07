@@ -24,11 +24,11 @@ namespace Netension.Event
             _logger = logger;
         }
 
-        public async Task DispatchAsync(IEvent @event, CancellationToken cancellationToken)
+        public Task DispatchAsync(IEvent @event, CancellationToken cancellationToken)
         {
             if (@event is null) throw new ArgumentNullException(nameof(@event));
 
-            await DispatchInternalAsync(@event, cancellationToken);
+            return DispatchInternalAsync(@event, cancellationToken);
         }
 
         private async Task DispatchInternalAsync(IEvent @event, CancellationToken cancellationToken)

@@ -20,20 +20,20 @@ namespace Netension.Event.Publishers
             _logger = logger;
         }
 
-        public async Task PublishAsync<TEvent>(TEvent @event, CancellationToken cancellationToken)
+        public Task PublishAsync<TEvent>(TEvent @event, CancellationToken cancellationToken)
             where TEvent : IEvent
         {
             if (@event is null) throw new ArgumentNullException(nameof(@event));
 
-            await PublishInternalAsync(@event, cancellationToken);
+            return PublishInternalAsync(@event, cancellationToken);
         }
 
-        public async Task PublishAsync<TEvent>(TEvent @event, string topic, CancellationToken cancellationToken)
+        public Task PublishAsync<TEvent>(TEvent @event, string topic, CancellationToken cancellationToken)
             where TEvent : IEvent
         {
             if (@event is null) throw new ArgumentNullException(nameof(@event));
 
-            await PublishInternalAsync(@event, topic, cancellationToken);
+            return PublishInternalAsync(@event, topic, cancellationToken);
         }
 
         private async Task PublishInternalAsync<TEvent>(TEvent @event, CancellationToken cancellationToken)
