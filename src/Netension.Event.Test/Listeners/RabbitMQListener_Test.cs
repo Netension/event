@@ -1,71 +1,83 @@
-﻿namespace Netension.Event.Test.Listeners
+﻿using AutoFixture;
+using Microsoft.Extensions.Logging;
+using Moq;
+using Netension.Event.RabbitMQ.Initializers;
+using Netension.Event.RabbitMQ.Listeners;
+using Netension.Event.RabbitMQ.Options;
+using Netension.Event.RabbitMQ.Receivers;
+using RabbitMQ.Client;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+using Xunit.Abstractions;
+using Netension.Event.RabbitMQ.Extensions;
+using System.Collections.Generic;
+using RabbitMQ.Client.Events;
+
+namespace Netension.Event.Test.Listeners
 {
-    //public class RabbitMQEventListener_Test
-    //{
-    //    private readonly ILogger<RabbitMQListener> _logger;
-    //    private Mock<IConnection> _connectionMock;
-    //    private RabbitMQListenerOptions _listenerOptions;
-    //    private Mock<IRabbitMQEventReceiver> _eventReceiverMock;
+    public class RabbitMQEventListener_Test
+    {
+        private readonly ILogger<RabbitMQEventListener> _logger;
+        private Mock<IModel> _channelMock;
+        private RabbitMQListenerOptions _options;
+        private Mock<IRabbitMQEventReceiver> _rabbitMQReceiverMock;
+        private Mock<IRabbitMQInitializer> _rabbitMQInitializerMock;
 
-    //    public RabbitMQEventListener_Test(ITestOutputHelper outputHelper)
-    //    {
-    //        _logger = new LoggerFactory()
-    //                    .AddXUnit(outputHelper)
-    //                    .CreateLogger<RabbitMQListener>();
-    //    }
+        public RabbitMQEventListener_Test(ITestOutputHelper outputHelper)
+        {
+            _logger = new LoggerFactory()
+                        .AddXUnit(outputHelper)
+                        .CreateLogger<RabbitMQEventListener>();
+        }
 
-    //    private RabbitMQEventListener CreateSUT()
-    //    {
-    //        _connectionMock = new Mock<IConnection>();
-    //        _listenerOptions = new RabbitMQListenerOptions();
-    //        _eventReceiverMock = new Mock<IRabbitMQEventReceiver>();
+        private RabbitMQEventListener CreateSUT()
+        {
+            _channelMock = new Mock<IModel>();
+            _options = new Fixture().Create<RabbitMQListenerOptions>();
+            _rabbitMQReceiverMock = new Mock<IRabbitMQEventReceiver>();
+            _rabbitMQInitializerMock = new Mock<IRabbitMQInitializer>();
 
-    //        return new RabbitMQEventListener(_connectionMock.Object, _listenerOptions, _eventReceiverMock.Object, _logger);
-    //    }
+            return new RabbitMQEventListener(_channelMock.Object, _options, _rabbitMQReceiverMock.Object, _rabbitMQInitializerMock.Object, _logger);
+        }
 
-    //    [Fact(DisplayName = "RabbitMQEventListener - ListenAsync - Create channel")]
-    //    public async Task RabbitMQListener_StartAsync_CreateChannel()
-    //    {
-    //        // Arrange
-    //        var sut = CreateSUT();
+        [Fact(DisplayName = "RabbitMQEventListener - ListenAsync - Initialize queue")]
+        public async Task RabbitMQEventListener_ListenAsync_InitializeQueue()
+        {
+            // Arrange
+            var sut = CreateSUT();
 
-    //        _connectionMock.Setup(c => c.CreateModel())
-    //            .Returns(new Mock<IModel>().Object);
+            // Act
+            await sut.ListenAsync(CancellationToken.None);
 
-    //        _listenerOptions.Setup(lo => lo.Value)
-    //            .Returns(new RabbitMQListenerOptions());
+            // Assert
+            _rabbitMQInitializerMock.Verify(ri => ri.InitializeAsync(It.Is<IModel>(c => c.Equals(_channelMock.Object)), It.Is<RabbitMQListenerOptions>(rmlo => rmlo.Equals(_options)), It.IsAny<CancellationToken>()), Times.Once);
+        }
 
-    //        // Act
-    //        await sut.ListenAsync(CancellationToken.None);
+        [Fact(DisplayName = "RabbitMQEventListener - ListenAsync - Consume")]
+        public async Task RabbitMQEventListener_ListenAsync_Consume()
+        {
+            // Arrange
+            var sut = CreateSUT();
 
-    //        // Assert
-    //        _connectionMock.Verify(c => c.CreateModel(), Times.Once);
-    //    }
+            // Act
+            await sut.ListenAsync(CancellationToken.None);
 
-    //    [Fact(DisplayName = "RabbitMQEventListener - ListenAsync - Consume")]
-    //    public async Task RabbitMQListener_StartAsync_Consume()
-    //    {
-    //        // Arrange
-    //        var sut = CreateSUT();
-    //        var channelMock = new Mock<IModel>();
-    //        var options = new RabbitMQListenerOptions
-    //        {
-    //            Exchange = "TestExchange",
-    //            Queue = "TestQueue",
-    //            Tag = "TestTag"
-    //        };
+            // Assert
+            _channelMock.Verify(c => c.BasicConsume(It.Is<string>(q => q.Equals(_options.Queue.Name)), It.Is<bool>(aa => aa.Equals(_options.Queue.AutoAck)), It.Is<string>(ct => ct.StartsWith(_options.Queue.ConsumerPrefix)), It.Is<bool>(nl => nl.Equals(_options.Queue.NoLocal)), It.Is<bool>(e => e.Equals(_options.Queue.Exclusive)), It.Is<IDictionary<string, object>>(a => a.Equals(_options.Queue.Arguments)), It.IsNotNull<AsyncEventingBasicConsumer>()), Times.Once);
+        }
 
-    //        _connectionMock.Setup(c => c.CreateModel())
-    //            .Returns(channelMock.Object);
+        [Fact(DisplayName = "RabbitMQEventListener - StopAsync - Close channel")]
+        public async Task RabbitMQEventListener_StopAsync_CloseChannel()
+        {
+            // Arrange
+            var sut = CreateSUT();
 
-    //        _listenerOptions.Setup(lo => lo.Value)
-    //            .Returns(options);
+            // Act
+            await sut.StopAsync(CancellationToken.None);
 
-    //        // Act
-    //        await sut.ListenAsync(CancellationToken.None);
-
-    //        // Assert
-    //        channelMock.Verify(c => c.BasicConsume(It.Is<string>(q => q.Equals(options.Queue)), It.Is<bool>(p => !p), It.Is<string>(t => t.Equals(options.Tag)), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<IDictionary<string, object>>(), It.IsAny<IBasicConsumer>()), Times.Once);
-    //    }
-    //}
+            // Assert
+            _channelMock.Verify(c => c.Close(), Times.Once);
+        }
+    }
 }

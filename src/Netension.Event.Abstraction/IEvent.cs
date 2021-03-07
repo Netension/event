@@ -1,12 +1,19 @@
 ﻿using System;
-using System.Text.Json.Serialization;
+using System.Collections.Generic;
 
 namespace Netension.Event.Abstraction
 {
-    public interface IEvent : IEquatable<IEvent>
+    /// <summary>
+    /// Base type of the events. Equatable by EventId property.
+    /// </summary>
+    public interface IEvent : IEqualityComparer<IEvent>
     {
-        Guid EventId { get; }
-        [JsonIgnore]
-        string MessageType { get; }
+        /// <summary>
+        /// Unique id of the event.
+        /// </summary>
+        /// <remarks>
+        /// Events are equal by EventId.
+        /// </remarks>
+        Guid? EventId { get; }
     }
 }

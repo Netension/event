@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Netension.Event.Abstraction;
+using Netension.Event.Extensions;
 using Netension.Event.RabbitMQ.Messages;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,7 @@ namespace Netension.Event.RabbitMQ.Wrappers
             {
                 Body = @event.Encode(_options.Value)
             };
-            message.Headers.SetMessageType(@event.MessageType);
+            message.Headers.SetMessageType(@event.GetMessageType());
 
             return Task.FromResult(message);
         }

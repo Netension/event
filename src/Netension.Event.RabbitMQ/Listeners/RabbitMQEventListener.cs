@@ -1,11 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
 using Netension.Event.Abstraction;
+using Netension.Event.RabbitMQ.Extensions;
 using Netension.Event.RabbitMQ.Initializers;
 using Netension.Event.RabbitMQ.Options;
 using Netension.Event.RabbitMQ.Receivers;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,6 +30,7 @@ namespace Netension.Event.RabbitMQ.Listeners
             _logger = logger;
         }
 
+        [ExcludeFromCodeCoverage]
         public Task ListenAsync(CancellationToken cancellationToken)
         {
             _initializer.InitializeAsync(_channel, _options, cancellationToken);
@@ -49,7 +52,7 @@ namespace Netension.Event.RabbitMQ.Listeners
                 }
             };
 
-            var consumerTag = $"{_options.Queue.ConsumerPrefix}-{Guid.NewGuid()}".TrimStart('-');
+            var consumerTag = _options.Queue.ConsumerPrefix.NewConsumerTag();
             _channel.BasicConsume(_options.Queue.Name, _options.Queue.AutoAck, consumerTag, _options.Queue.NoLocal, _options.Queue.Exclusive, _options.Queue.Arguments, consumer);
             _logger.LogDebug("{tag} consumer has been created.", consumerTag);
 

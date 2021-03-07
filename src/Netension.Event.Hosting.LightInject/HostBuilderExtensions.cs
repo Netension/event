@@ -12,7 +12,7 @@ namespace Microsoft.Extensions.Hosting
         {
             builder.ConfigureContainer<IServiceContainer>((context, container) =>
             {
-                container.RegisterTransient<IEventDispatcher, EventDispatcher>();
+                container.RegisterScoped<IEventDispatcher, EventDispatcher>();
             });
 
             build(new EventingBuilder(builder));

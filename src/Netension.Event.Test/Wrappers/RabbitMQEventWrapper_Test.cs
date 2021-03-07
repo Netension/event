@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Netension.Event.Abstraction;
 using Netension.Event.Defaults;
+using Netension.Event.Extensions;
 using Netension.Event.RabbitMQ.Wrappers;
 using System;
 using System.Text.Json;
@@ -59,7 +60,7 @@ namespace Netension.Event.Test.Wrappers
             var message = await sut.WrapAsync(@event, CancellationToken.None);
 
             // Assert
-            Assert.Equal(@event.MessageType, message.Headers[EventDefaults.MessageType]);
+            Assert.Equal(@event.GetMessageType(), message.Headers[EventDefaults.MessageType]);
         }
 
         [Fact(DisplayName = "RabbitMQEventWrapper - WrapAsync - Null event")]
@@ -70,7 +71,7 @@ namespace Netension.Event.Test.Wrappers
 
             // Act
             // Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await sut.WrapAsync(null, CancellationToken.None));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await sut.WrapAsync<Event>(null, CancellationToken.None));
         }
     }
 }

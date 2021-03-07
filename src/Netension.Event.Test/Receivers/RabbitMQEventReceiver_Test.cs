@@ -2,6 +2,7 @@
 using Moq;
 using Netension.Event.Abstraction;
 using Netension.Event.Defaults;
+using Netension.Event.Extensions;
 using Netension.Event.RabbitMQ.Receivers;
 using Netension.Event.RabbitMQ.Unwrappers;
 using Netension.Event.Test.Extensions;
@@ -47,7 +48,7 @@ namespace Netension.Event.Test.Receivers
             var basicDeliveryEventArgs = new BasicDeliverEventArgs(null, 0, false, null, null, basicPropertiesMock.Object, @event.Encode());
 
             basicPropertiesMock.SetupGet(bp => bp.Headers)
-                .Returns(new Dictionary<string, object> { { EventDefaults.MessageType, @event.MessageType } });
+                .Returns(new Dictionary<string, object> { { EventDefaults.MessageType, @event.GetMessageType() } });
 
             _unwrapperMock.Setup(uw => uw.UnwrapAsync(It.IsAny<BasicDeliverEventArgs>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(@event);
@@ -69,7 +70,7 @@ namespace Netension.Event.Test.Receivers
             var basicDeliveryEventArgs = new BasicDeliverEventArgs(null, 0, false, null, null, basicPropertiesMock.Object, @event.Encode());
 
             basicPropertiesMock.SetupGet(bp => bp.Headers)
-                .Returns(new Dictionary<string, object> { { EventDefaults.MessageType, @event.MessageType } });
+                .Returns(new Dictionary<string, object> { { EventDefaults.MessageType, @event.GetMessageType() } });
 
             _unwrapperMock.Setup(uw => uw.UnwrapAsync(It.IsAny<BasicDeliverEventArgs>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(@event);

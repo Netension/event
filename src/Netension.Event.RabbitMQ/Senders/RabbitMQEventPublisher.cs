@@ -3,6 +3,7 @@ using Netension.Event.Abstraction;
 using Netension.Event.RabbitMQ.Options;
 using Netension.Event.RabbitMQ.Wrappers;
 using RabbitMQ.Client;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -29,10 +30,18 @@ namespace Netension.Event.RabbitMQ.Senders
             await PublishAsync(@event, _options.RoutingKey, cancellationToken);
         }
 
-        public async Task PublishAsync<TEvent>(TEvent @event, string topic, CancellationToken cancellationToken)
+        public Task PublishAsync<TEvent>(TEvent @event, string topic, CancellationToken cancellationToken)
             where TEvent : IEvent
         {
-            _logger.LogDebug("Send {id} event", @event.EventId);
+            if (@event is null) throw new ArgumentNullException(nameof(@event));
+
+            return PublishInternalAsynx(@event, topic, cancellationToken);
+        }
+
+        private async Task PublishInternalAsynx<TEvent>(TEvent @event, string topic, CancellationToken cancellationToken) 
+            where TEvent : IEvent
+        {
+            _logger.LogDebug("Publish {id} event", @event.EventId);
             var message = await _wrapper.WrapAsync(@event, cancellationToken);
 
             var properties = _channel.CreateBasicProperties();

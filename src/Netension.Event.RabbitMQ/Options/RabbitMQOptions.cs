@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Security;
 
 namespace Netension.Event.RabbitMQ.Options
 {
+    [ExcludeFromCodeCoverage]
     public class RabbitMQOptions
     {
         [Required]

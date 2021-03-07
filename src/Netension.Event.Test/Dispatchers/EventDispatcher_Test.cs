@@ -36,9 +36,6 @@ namespace Netension.Event.Test.Dispatchers
             // Arrange
             var sut = CreateSUT();
 
-            _serviceProviderMock.Setup(sp => sp.GetService(It.IsAny<Type>()))
-                .Returns(Enumerable.Empty<IEventHandler<Event>>());
-
             // Act
             await sut.DispatchAsync(new Event(Guid.NewGuid()), CancellationToken.None);
 
@@ -55,13 +52,24 @@ namespace Netension.Event.Test.Dispatchers
             var eventHandlerMock = new Mock<IEventHandler<Event>>();
 
             _serviceProviderMock.Setup(sp => sp.GetService(It.IsAny<Type>()))
-                .Returns(new List<IEventHandler<Event>>() { eventHandlerMock.Object, eventHandlerMock.Object });
+                .Returns(new IEventHandler<Event>[] { eventHandlerMock.Object, eventHandlerMock.Object });
 
             // Act
             await sut.DispatchAsync(@event, CancellationToken.None);
 
             // Assert
             eventHandlerMock.Verify(eh => eh.HandleAsync(It.Is<Event>(e => e.Equals(@event)), It.IsAny<CancellationToken>()), Times.Exactly(2));
+        }
+
+        [Fact(DisplayName = "EventDispatcher - DispatchAsync - Event null")]
+        public async Task EventDispatcher_DispatchAsync_EventNull()
+        {
+            // Arrange
+            var sut = CreateSUT();
+
+            // Act
+            // Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await sut.DispatchAsync(null, CancellationToken.None));
         }
     }
 }

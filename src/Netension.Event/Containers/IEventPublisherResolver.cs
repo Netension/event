@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace Netension.Event.Containers
 {
-    public interface IEventPublisherKeyResolver
+    public interface IEventPublisherResolver
     {
-        IEnumerable<string> Resolve(IEvent @event);
+        IEnumerable<IEventPublisher> Resolve(IEvent @event);
     }
 }

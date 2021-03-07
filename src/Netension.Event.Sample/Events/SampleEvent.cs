@@ -10,8 +10,7 @@ namespace Netension.Event.Sample.Events
     {
         public string Message { get; }
 
-        public SampleEvent(Guid eventId, string message) 
-            : base(eventId)
+        public SampleEvent(string message)
         {
             Message = message;
         }
