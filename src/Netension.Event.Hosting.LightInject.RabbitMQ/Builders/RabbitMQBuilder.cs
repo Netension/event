@@ -24,13 +24,11 @@ namespace Netension.Event.Hosting.LightInject.RabbitMQ.Builders
     {
         public IHostBuilder HostBuilder { get; }
         public string RabbitMQKey { get; }
-        public IEventPublisherKeyRegister Register { get; }
 
-        public RabbitMQBuilder(IHostBuilder hostBuilder, string rabbitMQKey, IEventPublisherKeyRegister register)
+        public RabbitMQBuilder(IHostBuilder hostBuilder, string rabbitMQKey)
         {
             HostBuilder = hostBuilder;
             RabbitMQKey = rabbitMQKey;
-            Register = register;
         }
 
         public void AddPublisher(string key, Action<RabbitMQPublisherOptions, IConfiguration> configure, Func<IEvent, bool> predicate)
@@ -44,7 +42,7 @@ namespace Netension.Event.Hosting.LightInject.RabbitMQ.Builders
 
             HostBuilder.ConfigureContainer<IServiceContainer>((context, container) =>
             {
-                Register.Registrate(key, predicate);
+                //Register.Registrate(key, predicate);
 
                 container.RegisterTransient<IRabbitMQEventWrapper, RabbitMQEventWrapper>(key);
                 container.RegisterScoped<IEventPublisher>(factory => new RabbitMQEventPublisher(factory.GetInstance<IModel>($"{RabbitMQKey}-{RabbitMQDefaults.Connections.PublisherSuffix}"), factory.GetInstance<IRabbitMQEventWrapper>(), factory.GetInstance<IOptionsSnapshot<RabbitMQPublisherOptions>>().Get(key), factory.GetInstance<ILogger<RabbitMQEventPublisher>>()), key);

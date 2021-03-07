@@ -3,7 +3,7 @@ using System;
 
 namespace Netension.Event.Containers
 {
-    public interface IEventPublisherKeyRegister
+    public interface IEventPublisherRegister
     {
         void Registrate(string key, Func<IEvent, bool> predicate);
     }
