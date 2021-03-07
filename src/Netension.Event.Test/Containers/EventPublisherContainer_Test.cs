@@ -16,17 +16,17 @@ namespace Netension.Event.Test.Containers
 {
     public class EventPublisherContainer_Test
     {
-        private readonly ILogger<EventPublisherContainer> _logger;
+        private readonly ILogger<EventPublisherResolver> _logger;
         private ServiceContainer _serviceContainer;
 
         public EventPublisherContainer_Test(ITestOutputHelper outputHelper)
         {
             _logger = new LoggerFactory()
                         .AddXUnit(outputHelper, LogLevel.Trace)
-                        .CreateLogger<EventPublisherContainer>();
+                        .CreateLogger<EventPublisherResolver>();
         }
 
-        private EventPublisherContainer CreateSUT()
+        private EventPublisherResolver CreateSUT()
         {
             _serviceContainer = new ServiceContainer();
 

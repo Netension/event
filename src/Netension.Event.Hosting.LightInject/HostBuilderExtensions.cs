@@ -10,11 +10,6 @@ namespace Microsoft.Extensions.Hosting
     {
         public static IHostBuilder UseEventing(this IHostBuilder builder, Action<EventingBuilder> build)
         {
-            builder.ConfigureContainer<IServiceContainer>((context, container) =>
-            {
-                container.RegisterTransient<IEventDispatcher, EventDispatcher>();
-            });
-
             build(new EventingBuilder(builder));
 
             return builder;

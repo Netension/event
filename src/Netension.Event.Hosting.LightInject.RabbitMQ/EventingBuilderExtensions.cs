@@ -2,12 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Netension.Event.Abstraction;
-using Netension.Event.Containers;
 using Netension.Event.Hosting.Builders;
-using Netension.Event.Hosting.LightInject.RabbitMQ.Builders;
 using Netension.Event.Hosting.LightInject.RabbitMQ.Defaults;
-using Netension.Event.Publishers;
 using Netension.Event.RabbitMQ.Initializers;
 using Netension.Event.RabbitMQ.Options;
 using Netension.Extensions.Security;
@@ -18,15 +14,13 @@ namespace Netension.Event.Hosting.RabbitMQ
 {
     public static class EventingBuilderExtensions
     {
-        public static void UseRabbitMQ(this EventingBuilder builder, Action<RabbitMQOptions, IConfiguration> configure, Action<RabbitMQBuilder> build)
+        public static void UseRabbitMQ(this EventingBuilder builder, Action<RabbitMQOptions, IConfiguration> configure)
         {
-            builder.UseRabbitMQ(RabbitMQDefaults.Key, configure, build);
+            builder.UseRabbitMQ(RabbitMQDefaults.Key, configure);
         }
 
-        public static void UseRabbitMQ(this EventingBuilder builder, string key, Action<RabbitMQOptions, IConfiguration> configure, Action<RabbitMQBuilder> build)
+        public static void UseRabbitMQ(this EventingBuilder builder, string key, Action<RabbitMQOptions, IConfiguration> configure)
         {
-            //var keyContainer = new EventPublisherContainer();
-
             builder.HostBuilder.ConfigureServices((context, services) =>
             {
                 services.AddOptions<RabbitMQOptions>(key)
@@ -36,17 +30,11 @@ namespace Netension.Event.Hosting.RabbitMQ
 
             builder.HostBuilder.ConfigureContainer<IServiceContainer>((context, container) =>
             {
-                //container.RegisterInstance<IEventPublisherResolver>(keyContainer);
-                //container.RegisterInstance<IEventPublisherRegister>(keyContainer);
-
                 container.RegisterSingleton(factory => CreateChannel(factory.GetInstance<IOptionsSnapshot<RabbitMQOptions>>().Get(key)), $"{key}-{RabbitMQDefaults.Connections.ListenerSuffix}");
                 container.RegisterSingleton(factory => CreateChannel(factory.GetInstance<IOptionsSnapshot<RabbitMQOptions>>().Get(key)), $"{key}-{RabbitMQDefaults.Connections.PublisherSuffix}");
-               
-                container.RegisterTransient<IRabbitMQInitializer, RabbitMQInitializer>();
-                container.RegisterTransient<IEventPublisher, EventPublisher>();
-            });
 
-            //build(new RabbitMQBuilder(builder.HostBuilder, key, keyContainer));
+                container.RegisterTransient<IRabbitMQInitializer, RabbitMQInitializer>();
+            });
         }
 
         private static IModel CreateChannel(RabbitMQOptions options)

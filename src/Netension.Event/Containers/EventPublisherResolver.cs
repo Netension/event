@@ -6,25 +6,18 @@ using System.Linq;
 
 namespace Netension.Event.Containers
 {
-    public class EventPublisherContainer : IEventPublisherRegister, IEventPublisherResolver
+    public class EventPublisherResolver : IEventPublisherResolver
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly ILogger<EventPublisherContainer> _logger;
+        private readonly ILogger<EventPublisherResolver> _logger;
 
-        private readonly IDictionary<string, Func<IEvent, bool>> _registrations = new Dictionary<string, Func<IEvent, bool>>();
+        private readonly IDictionary<string, Func<IEvent, bool>> _registrations;
 
-        public EventPublisherContainer(IServiceProvider serviceProvider, ILogger<EventPublisherContainer> logger)
+        public EventPublisherResolver(IServiceProvider serviceProvider, EventPublisherCollection registrations, ILogger<EventPublisherResolver> logger)
         {
             _serviceProvider = serviceProvider;
+            _registrations = registrations;
             _logger = logger;
-        }
-
-        public void Registrate(string key, Func<IEvent, bool> predicate)
-        {
-            if (key is null) throw new ArgumentNullException(nameof(key));
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
-
-            _registrations.Add(key, predicate);
         }
 
         public IEnumerable<IEventPublisher> Resolve(IEvent @event)
