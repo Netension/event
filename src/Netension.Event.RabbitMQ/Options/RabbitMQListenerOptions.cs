@@ -8,11 +8,13 @@ namespace Netension.Event.RabbitMQ.Options
         /// <summary>
         /// Options for listener queue.
         /// </summary>
+        [Required]
         public QueueOptions Queue { get; set; }
 
         /// <summary>
         /// Options for bindings.
         /// </summary>
+        [Required]
         public IEnumerable<BindingOptions> Bindings { get; set; }
     }
 

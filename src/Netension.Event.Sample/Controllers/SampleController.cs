@@ -21,7 +21,7 @@ namespace Netension.Event.Sample.Controllers
         [HttpGet]
         public async Task Get()
         {
-            await _publisher.PublishAsync(new SampleEvent(Guid.NewGuid(), "Hello World!"), "routingkey", CancellationToken.None);
+            await _publisher.PublishAsync(new SampleEvent("Hello World!"), "routingkey", CancellationToken.None);
         }
     }
 }

@@ -38,7 +38,7 @@ namespace Netension.Event
 
             var handlers = (dynamic)_serviceProvider.GetService(typeof(IEnumerable<>).MakeGenericType(eventHandlerType));
 
-            if (handlers == null || handlers.Count == 0) _logger.LogDebug("Handler not found for {type} event type", @event.GetType());
+            if (handlers == null || handlers.Length == 0) _logger.LogDebug("Handler not found for {type} event type", @event.GetType());
             if (handlers == null) return;
 
             var handleTasks = new List<Task>();

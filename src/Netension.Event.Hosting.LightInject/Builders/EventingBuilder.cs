@@ -35,5 +35,10 @@ namespace Netension.Event.Hosting.Builders
 
             registrate(new LightInject.Registers.EventPublisherRegister(HostBuilder, new Containers.EventPublisherRegister(eventPublisherCollection)));
         }
+
+        public void RegistrateEventListeners(Action<EventListenerRegister> registrate)
+        {
+            registrate(new EventListenerRegister(HostBuilder));
+        }
     }
 }

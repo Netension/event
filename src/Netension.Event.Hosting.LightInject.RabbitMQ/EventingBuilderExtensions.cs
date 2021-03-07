@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Netension.Event.Hosting.Builders;
 using Netension.Event.Hosting.LightInject.RabbitMQ.Defaults;
+using Netension.Event.Hosting.LightInject.RabbitMQ.Startups;
 using Netension.Event.RabbitMQ.Initializers;
 using Netension.Event.RabbitMQ.Options;
 using Netension.Extensions.Security;
@@ -26,6 +27,8 @@ namespace Netension.Event.Hosting.RabbitMQ
                 services.AddOptions<RabbitMQOptions>(key)
                     .Configure(configure)
                     .ValidateDataAnnotations();
+
+                services.AddHostedService<ListenerStartup>();
             });
 
             builder.HostBuilder.ConfigureContainer<IServiceContainer>((context, container) =>
