@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Netension.Event.Abstraction;
+using Netension.Event.Hosting.LightInject.RabbitMQ.Builders;
 using Netension.Event.Hosting.LightInject.RabbitMQ.Defaults;
 using Netension.Event.RabbitMQ.Options;
 using Netension.Event.RabbitMQ.Senders;
@@ -15,7 +16,7 @@ namespace Netension.Event.Hosting.LightInject.Registers
 {
     public static class EventPublisherRegisterExtensions
     {
-        public static void RegistrateRabbitMQPublisher(this EventPublisherRegister register, string rabbitKey, string key, Func<IEvent, bool> predicate, Action<RabbitMQPublisherOptions, IConfiguration> configure)
+        public static void RegistrateRabbitMQPublisher(this EventPublisherRegister register, string rabbitKey, string key, Func<IEvent, bool> predicate, Action<RabbitMQPublisherOptions, IConfiguration> configure, Action<RabbitMQPublisherBuilder> build)
         {
             register.Builder.ConfigureServices((context, services) =>
             {
@@ -31,6 +32,8 @@ namespace Netension.Event.Hosting.LightInject.Registers
             });
 
             register.Register.Registrate(key, predicate);
+
+            build(new RabbitMQPublisherBuilder(key, register.Builder));
         }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Netension.Event.Hosting.LightInject.Registers;
 using Netension.Event.Hosting.RabbitMQ;
+using Netension.Extensions.Correlation;
 using Netension.Extensions.Security;
 using Serilog;
 
@@ -23,21 +24,26 @@ namespace Netension.Event.Sample
                     configuration
                         .ReadFrom.Configuration(context.Configuration);
                 })
+                .ConfigureServices((context, services) =>
+                {
+                    services.RegistrateCorrelation();
+                })
                 .UseEventing(builder =>
                 {
+
                     builder.UseRabbitMQ((options, configuration) => { configuration.GetSection("RabbitMQ").Bind(options); options.Password = "guest".Encrypt(); });
 
                     builder.RegistrateEventHandlers(register => register.RegistrateHandlerFromAssemblyOf<Startup>());
 
                     builder.RegistrateEventPublishers((register) =>
                     {
-                        register.RegistrateRabbitMQPublisher("rabbitmq", "RabbitMQ", (@event) => true, (options, configuration) => configuration.GetSection("RabbitMQ:Publish").Bind(options));
+                        register.RegistrateRabbitMQPublisher("rabbitmq", "RabbitMQ", (@event) => true, (options, configuration) => configuration.GetSection("RabbitMQ:Publish").Bind(options), (builder) => builder.UseCorrelation());
                     });
 
-                    builder.RegistrateEventListeners((register) =>
-                    {
-                        register.RegistrateRabbitMQListener("rabbitmq", "RabbitMQ", (options, configuration) => configuration.GetSection("RabbitMQ:Listen").Bind(options));
-                    });
+                    //builder.RegistrateEventListeners((register) =>
+                    //{
+                    //    register.RegistrateRabbitMQListener("rabbitmq", "RabbitMQ", (options, configuration) => configuration.GetSection("RabbitMQ:Listen").Bind(options));
+                    //});
 
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
