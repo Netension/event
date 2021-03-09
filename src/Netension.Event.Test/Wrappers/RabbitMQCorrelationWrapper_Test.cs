@@ -3,8 +3,10 @@ using Moq;
 using Netension.Event.RabbitMQ.Messages;
 using Netension.Event.RabbitMQ.Wrappers;
 using Netension.Extensions.Correlation;
+using Netension.Extensions.Correlation.Defaults;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -70,7 +72,7 @@ namespace Netension.Event.Test.Wrappers
             var result = await sut.WrapAsync(new Event(), CancellationToken.None);
 
             // Assert
-            Assert.Equal(correlationId, result.Headers.GetCorrelationId());
+            Assert.Equal(correlationId, Guid.Parse(result.Headers[CorrelationDefaults.CorrelationId].ToString().AsSpan()));
         }
 
         [Fact(DisplayName = "RabbitMQCorrelationWrapper - WrapAsync - Null CorrelationId")]
@@ -106,7 +108,7 @@ namespace Netension.Event.Test.Wrappers
             var result = await sut.WrapAsync(new Event(), CancellationToken.None);
 
             // Assert
-            Assert.Equal(messageId, result.Headers.GetCausationId());
+            Assert.Equal(messageId, Guid.Parse(result.Headers[CorrelationDefaults.CausationId].ToString().AsSpan()));
         }
     }
 }

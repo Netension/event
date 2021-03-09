@@ -22,7 +22,8 @@ namespace System.Collections.Generic
 
         public static Guid GetCorrelationId(this IDictionary<string, object> headers)
         {
-            return Guid.Parse(headers[CorrelationDefaults.CorrelationId].ToString().AsSpan());
+            if (!headers.ContainsKey(CorrelationDefaults.CorrelationId)) throw new InvalidOperationException($"{CorrelationDefaults.CorrelationId} header was not present.");
+            return Guid.Parse(Encoding.UTF8.GetString((byte[])headers[CorrelationDefaults.CorrelationId]).AsSpan());
         }
 
         public static void SetCorrelationId(this IDictionary<string, object> headers, Guid value)
@@ -33,12 +34,19 @@ namespace System.Collections.Generic
 
         public static Guid? GetCausationId(this IDictionary<string, object> headers)
         {
-            return Guid.Parse(headers[CorrelationDefaults.CausationId].ToString().AsSpan());
+            if (!headers.ContainsKey(CorrelationDefaults.CausationId)) return null;
+
+            var value = (byte[])headers[CorrelationDefaults.CausationId];
+            if (value is null || value.Length == 0) return null;
+
+            return Guid.Parse(Encoding.UTF8.GetString(value));
         }
 
         public static void SetCausationId(this IDictionary<string, object> headers, Guid? value)
         {
-            headers.Add(CorrelationDefaults.CausationId, value.ToString());
+            string causationId = null;
+            if (value.HasValue) causationId = value.Value.ToString();
+            headers.Add(CorrelationDefaults.CausationId, causationId);
         }
     }
 }

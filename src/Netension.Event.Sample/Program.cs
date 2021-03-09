@@ -40,10 +40,10 @@ namespace Netension.Event.Sample
                         register.RegistrateRabbitMQPublisher("rabbitmq", "RabbitMQ", (@event) => true, (options, configuration) => configuration.GetSection("RabbitMQ:Publish").Bind(options), (builder) => builder.UseCorrelation());
                     });
 
-                    //builder.RegistrateEventListeners((register) =>
-                    //{
-                    //    register.RegistrateRabbitMQListener("rabbitmq", "RabbitMQ", (options, configuration) => configuration.GetSection("RabbitMQ:Listen").Bind(options));
-                    //});
+                    builder.RegistrateEventListeners((register) =>
+                    {
+                        register.RegistrateRabbitMQListener("rabbitmq", "RabbitMQ", (options, configuration) => configuration.GetSection("RabbitMQ:Listen").Bind(options), (builder) => builder.UseCorrelation());
+                    });
 
                 })
                 .ConfigureWebHostDefaults(webBuilder =>

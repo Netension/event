@@ -1,6 +1,5 @@
 ﻿using Netension.Event.Abstraction;
 using System;
-using System.Text;
 using System.Text.Json;
 
 namespace RabbitMQ.Client.Events
