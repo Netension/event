@@ -1,6 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Netension.Extensions.Security;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Security;
+using System.Text.Json.Serialization;
 
 namespace Netension.Event.RabbitMQ.Options
 {
@@ -13,6 +15,6 @@ namespace Netension.Event.RabbitMQ.Options
         [Required]
         public string UserName { get; set; }
         [Required]
-        public SecureString Password { get; set; }
+        public string Password { get; set; }
     }
 }

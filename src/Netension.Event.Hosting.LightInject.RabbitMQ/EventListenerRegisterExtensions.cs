@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Netension.Event.Abstraction;
 using Netension.Event.Hosting.LightInject.RabbitMQ.Defaults;
+using Netension.Event.Hosting.LightInject.RabbitMQ.Enumerations;
 using Netension.Event.RabbitMQ.Initializers;
 using Netension.Event.RabbitMQ.Listeners;
 using Netension.Event.RabbitMQ.Options;
@@ -17,7 +18,16 @@ namespace Netension.Event.Hosting.LightInject.Registers
 {
     public static class EventListenerRegisterExtensions
     {
+<<<<<<< Updated upstream
         public static void RegistrateRabbitMQListener(this EventListenerRegister register, string rabbitKey, string key, Action<RabbitMQListenerOptions, IConfiguration> configure)
+=======
+        public static void RegistrateRabbitMQListener(this EventListenerRegister register, RabbitMQListenerEnumeration enumeration)
+        {
+            register.RegistrateRabbitMQListener(enumeration.RabbitKey, enumeration.Name, enumeration.Configure, enumeration.Build);
+        }
+
+        public static void RegistrateRabbitMQListener(this EventListenerRegister register, string rabbitKey, string key, Action<RabbitMQListenerOptions, IConfiguration> configure, Action<RabbitMQListenerBuilder> build)
+>>>>>>> Stashed changes
         {
             register.Builder.ConfigureServices((context, services) =>
             {
