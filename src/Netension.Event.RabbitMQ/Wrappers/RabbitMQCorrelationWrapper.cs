@@ -11,9 +11,9 @@ namespace Netension.Event.RabbitMQ.Wrappers
 {
     public class RabbitMQCorrelationWrapper : IRabbitMQEventWrapper
     {
-        private ICorrelationAccessor _correlationAccessor;
-        private IRabbitMQEventWrapper _next;
-        private ILogger<RabbitMQCorrelationWrapper> _logger;
+        private readonly ICorrelationAccessor _correlationAccessor;
+        private readonly IRabbitMQEventWrapper _next;
+        private readonly ILogger<RabbitMQCorrelationWrapper> _logger;
 
         public RabbitMQCorrelationWrapper(ICorrelationAccessor correlationAccessor, IRabbitMQEventWrapper next, ILogger<RabbitMQCorrelationWrapper> logger)
         {
