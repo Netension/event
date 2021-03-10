@@ -24,6 +24,11 @@ namespace Netension.Event.Containers
         {
             if (@event is null) throw new ArgumentNullException(nameof(@event));
 
+            return ResolveInternal(@event);
+        }
+
+        private IEnumerable<IEventPublisher> ResolveInternal(IEvent @event)
+        {
             _logger.LogDebug("Resolve {type} for {id}", typeof(IEventPublisher), @event.EventId);
 
             var factory = (Func<string, IEventPublisher>)_serviceProvider.GetService(typeof(Func<string, IEventPublisher>));

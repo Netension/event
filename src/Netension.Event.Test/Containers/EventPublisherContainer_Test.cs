@@ -61,15 +61,13 @@ namespace Netension.Event.Test.Containers
             Assert.Equal(2, result.Count(r => r.Equals(publisherMock.Object)));
         }
 
-        [Fact(DisplayName = "EventPublisherContainer - Resolve - Event null", Skip = "False failed")]
+        [Fact(DisplayName = "EventPublisherContainer - Resolve - Event null")]
         public void EventPublisherContainer_Resolve_EventNull()
         {
             // Arrange
             var sut = CreateSUT();
 
             // Act
-            sut.Resolve(null);
-
             // Assert
             Assert.Throws<ArgumentNullException>(() => sut.Resolve(null));
         }
