@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Netension.Event.Abstraction;
+using Netension.Event.Hosting.LightInject.RabbitMQ.Builders;
 using Netension.Event.Hosting.LightInject.RabbitMQ.Defaults;
 using Netension.Event.Hosting.LightInject.RabbitMQ.Enumerations;
 using Netension.Event.RabbitMQ.Options;
@@ -16,16 +17,12 @@ namespace Netension.Event.Hosting.LightInject.Registers
 {
     public static class EventPublisherRegisterExtensions
     {
-<<<<<<< Updated upstream
-        public static void RegistrateRabbitMQPublisher(this EventPublisherRegister register, string rabbitKey, string key, Func<IEvent, bool> predicate, Action<RabbitMQPublisherOptions, IConfiguration> configure)
-=======
         public static void RegistrateRabbitMQPublisher(this EventPublisherRegister register, RabbitMQPublisherEnumeration enumeration)
         {
             register.RegistrateRabbitMQPublisher(enumeration.RabbitKey, enumeration.Name, enumeration.Predicate, enumeration.Configure, enumeration.Build);
         }
 
         public static void RegistrateRabbitMQPublisher(this EventPublisherRegister register, string rabbitKey, string key, Func<IEvent, bool> predicate, Action<RabbitMQPublisherOptions, IConfiguration> configure, Action<RabbitMQPublisherBuilder> build)
->>>>>>> Stashed changes
         {
             register.Builder.ConfigureServices((context, services) =>
             {
@@ -41,6 +38,8 @@ namespace Netension.Event.Hosting.LightInject.Registers
             });
 
             register.Register.Registrate(key, predicate);
+
+            build(new RabbitMQPublisherBuilder(key, register.Builder));
         }
     }
 }
