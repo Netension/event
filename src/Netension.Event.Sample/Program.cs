@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Netension.Event.Hosting.LightInject.Registers;
 using Netension.Event.Hosting.RabbitMQ;
+using Netension.Event.Sample.Enumerations;
 using Netension.Extensions.Correlation;
 using Netension.Extensions.Security;
 using Serilog;
@@ -30,19 +31,18 @@ namespace Netension.Event.Sample
                 })
                 .UseEventing(builder =>
                 {
-
-                    builder.UseRabbitMQ((options, configuration) => { configuration.GetSection("RabbitMQ").Bind(options); options.Password = "guest".Encrypt(); });
+                    builder.UseRabbitMQ(EventingEnumerations.RabbitMQ);
 
                     builder.RegistrateEventHandlers(register => register.RegistrateHandlerFromAssemblyOf<Startup>());
 
                     builder.RegistrateEventPublishers((register) =>
                     {
-                        register.RegistrateRabbitMQPublisher("rabbitmq", "RabbitMQ", (@event) => true, (options, configuration) => configuration.GetSection("RabbitMQ:Publish").Bind(options), (builder) => builder.UseCorrelation());
+                        register.RegistrateRabbitMQPublisher(EventingEnumerations.Publishers.Publisher);
                     });
 
                     builder.RegistrateEventListeners((register) =>
                     {
-                        register.RegistrateRabbitMQListener("rabbitmq", "RabbitMQ", (options, configuration) => configuration.GetSection("RabbitMQ:Listen").Bind(options), (builder) => builder.UseCorrelation());
+                        register.RegistrateRabbitMQListener(EventingEnumerations.Listeners.Listener);
                     });
 
                 })

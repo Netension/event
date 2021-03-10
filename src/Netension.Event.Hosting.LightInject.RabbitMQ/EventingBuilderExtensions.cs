@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Netension.Event.Hosting.Builders;
 using Netension.Event.Hosting.LightInject.RabbitMQ.Defaults;
+using Netension.Event.Hosting.LightInject.RabbitMQ.Enumerations;
 using Netension.Event.Hosting.LightInject.RabbitMQ.Startups;
 using Netension.Event.RabbitMQ.Initializers;
 using Netension.Event.RabbitMQ.Options;
@@ -15,6 +16,11 @@ namespace Netension.Event.Hosting.RabbitMQ
 {
     public static class EventingBuilderExtensions
     {
+        public static void UseRabbitMQ(this EventingBuilder builder, RabbitMQEnumeration enumeration)
+        {
+            builder.UseRabbitMQ(enumeration.Name, enumeration.Configure);
+        }
+
         public static void UseRabbitMQ(this EventingBuilder builder, Action<RabbitMQOptions, IConfiguration> configure)
         {
             builder.UseRabbitMQ(RabbitMQDefaults.Key, configure);
@@ -47,7 +53,7 @@ namespace Netension.Event.Hosting.RabbitMQ
                 HostName = options.Host,
                 Port = options.Port,
                 UserName = options.UserName,
-                Password = options.Password.Decrypt(),
+                Password = options.Password,
                 DispatchConsumersAsync = true
             }.CreateConnection().CreateModel();
         }

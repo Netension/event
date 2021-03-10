@@ -17,12 +17,12 @@ namespace Netension.Event.RabbitMQ.Initializers
 
         public Task InitializeAsync(IModel channel, RabbitMQListenerOptions options, CancellationToken cancellationToken)
         {
-            _logger.LogDebug("Create {queue} queue", options.Queue);
+            _logger.LogDebug("Create {queue} queue", options.Queue.Name);
             channel.QueueDeclare(options.Queue.Name, options.Queue.Durable, options.Queue.Exclusive, options.Queue.AutoDelete, options.Queue.Arguments);
 
             foreach (var binding in options.Bindings)
             {
-                _logger.LogDebug("Bind {queue} to {exchange} exchange", options.Queue, binding.Exchange);
+                _logger.LogDebug("Bind {queue} queue to {exchange} exchange", options.Queue.Name, binding.Exchange);
                 channel.QueueBind(options.Queue.Name, binding.Exchange, binding.RoutingKey, binding.Arguments);
             }
 
